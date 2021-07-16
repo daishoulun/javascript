@@ -1,0 +1,85 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>剪切板</title>
+</head>
+<body>
+  <h1>Clipboard API(异步)</h1>
+  <label for="input">输出框</label>
+  <input id="input" type="text" value="12312" />
+  <button class="copy">一键复制</button>
+  <br>
+  <label for="output">输入框</label>
+  <input type="text" id="output" />
+  <button class="paste">粘贴</button>
+
+  <br>
+  <button class="pic">复制图片</button>
+  <button class="picPaste">粘贴图片</button>
+  <br>
+  <img class="img" src="" alt="" />
+  <br>
+  <script>
+    const clipboardObj = navigator.clipboard
+    const copyBtn = document.querySelector('.copy')
+    const input = document.querySelector('#input')
+    const pasteBtn = document.querySelector('.paste')
+    const output = document.querySelector('#output')
+    const picBtn = document.querySelector('.pic')
+    const picPasteBtn = document.querySelector('.picPaste')
+    const img = document.querySelector('.img')
+
+    const mySection = document.querySelector('.mySection')
+    const picTextBtn = document.querySelector('.picText')
+    const picTextPasteBtn = document.querySelector('.picTextPaste')
+    
+    
+    copyBtn.onclick = async () => {
+      // 点击后，会出现弹窗，询问用户是否同意读取剪切板，如果拒绝可以通过try catch 捕获
+      try {
+        const text = await clipboardObj.writeText(input.value) // 将文本内容写入剪切板
+      } catch(err) {
+        console.log(err)
+      }
+    }
+
+    pasteBtn.onclick = async () => {
+      try {
+        const result = await clipboardObj.readText()
+        output.value = result
+      } catch(err) {
+        console.log(err)
+      }
+    }
+
+    picBtn.onclick = async () => {
+      try {
+        const imgURL = 'https://dummyimage.com/300.png';
+        const data = await fetch(imgURL);
+        const blob = await data.blob();
+        await navigator.clipboard.write([
+          new ClipboardItem({
+            [blob.type]: blob
+          })
+        ]);
+        console.log('Image copied.');
+      } catch (err) {
+        console.error(err.name, err.message);
+      }
+    }
+    picPasteBtn.onclick = async () => {
+      try {
+        const result = await clipboardObj.read()
+        const imgBlob = await result[0].getType("image/png");
+        img.src = URL.createObjectURL(imgBlob)
+      } catch (error) {
+        
+      }
+    }
+  </script>
+</body>
+</html>
