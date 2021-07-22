@@ -72,10 +72,10 @@
     fetch('https://www.baidu.com/img/flexible/logo/pc/result.png').then(() => 'blog'),
     fetch('https://www.baidu.com/img/flexible/logo/pc/result@2.png').then(() => 'docs')
   ]).then(first => {
-    // 所有请求状态都改变为 [fulfilled] 时, 进入then回调
+    // 只要有一个promise的请求状态改变为 [fulfilled] 时, 就返回该结果
     console.log(first)
   }).catch(error => {
-    // 所有请求状态改变为 [rejected] 时, 进入catch回调
+    // 所有promise请求状态改变为 [rejected] 时, 进入catch回调，报错
     console.log(error)
   })
 }
