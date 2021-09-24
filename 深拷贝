@@ -1,0 +1,38 @@
+const objA = {
+    name: 'jack',
+    birthday: new Date(),
+    pattern: /jack/g,
+    body: document.body,
+    others: [123,'coding', new Date(), /abc/gim,],
+    obj: {
+      a: {
+        b: 'c'
+      }
+    }
+  };
+
+
+  const deepCopy = sourceObj => {
+    if (typeof sourceObj !== 'object') return
+    let newObj = sourceObj instanceof Array ? [] : {}
+    for (let key in sourceObj) {
+      if (sourceObj.hasOwnProperty(key)) {
+        if (!(key in newObj)) {
+          if (sourceObj[key] instanceof Date) {
+            newObj[key] = new Date(sourceObj[key].getTime())
+          } else if (sourceObj[key] instanceof RegExp) {
+            newObj[key] = new RegExp(sourceObj[key])
+          } else if ((typeof sourceObj[key] === 'object') && sourceObj[key].nodeType === 1) {
+            let domNew = document.getElementsByTagName(sourceObj[key].nodeName)[0]
+            newObj[key] = domNew.cloneNode(true)
+          } else {
+            newObj[key] = (typeof sourceObj[key] === 'object') ? deepCopy(sourceObj[key]) : sourceObj[key]
+          }
+        }
+      }
+    }
+    return newObj
+  }
+  const objB = deepCopy(objA);
+  console.log(objA === objB); // 打印 false
+  console.log(objA, objB); // 对象内容一样
